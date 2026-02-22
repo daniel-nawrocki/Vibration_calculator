@@ -49,21 +49,34 @@
         button {
             width: 100%;
             padding: 10px 20px;
-            background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 5px;
         }
 
-        button:hover {
+        .calculate-btn {
+            background-color: #007bff;
+        }
+
+        .calculate-btn:hover {
             background-color: #0056b3;
+        }
+
+        .reset-btn {
+            background-color: #6c757d;
+        }
+
+        .reset-btn:hover {
+            background-color: #5a6268;
         }
 
         #result {
             margin-top: 20px;
             text-align: center;
             color: #007bff;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -71,6 +84,7 @@
 <body>
     <div class="container">
         <h1>Expected Vibration Calculator</h1>
+
         <form id="vibrationForm">
             <label for="hFactor">H Factor:</label>
             <input type="number" id="hFactor" name="hFactor" value="160" min="1" required>
@@ -81,7 +95,8 @@
             <label for="distanceToSeismograph">Distance to Seismograph (in feet):</label>
             <input type="number" id="distanceToSeismograph" name="distanceToSeismograph" min="0" required>
 
-            <button type="button" onclick="calculatePPV()">Calculate</button>
+            <button type="button" class="calculate-btn" onclick="calculatePPV()">Calculate</button>
+            <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
         </form>
 
         <div id="result"></div>
@@ -93,10 +108,22 @@
             var poundsPerDelay = parseFloat(document.getElementById('poundsPerDelay').value);
             var distanceToSeismograph = parseFloat(document.getElementById('distanceToSeismograph').value);
 
+            if (distanceToSeismograph === 0) {
+                document.getElementById('result').innerHTML =
+                    "<p>Distance cannot be zero.</p>";
+                return;
+            }
+
             var ppv = hFactor * Math.pow((Math.sqrt(poundsPerDelay) / distanceToSeismograph), 1.6);
 
             document.getElementById('result').innerHTML =
                 "<p>Expected PPV: " + ppv.toFixed(3) + "</p>";
+        }
+
+        function resetForm() {
+            document.getElementById('vibrationForm').reset();
+            document.getElementById('hFactor').value = 160; // ensures H-factor returns to default
+            document.getElementById('result').innerHTML = "";
         }
 
         // Service Worker Registration
